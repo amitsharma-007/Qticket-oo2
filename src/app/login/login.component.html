@@ -1,0 +1,66 @@
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<div class="container">
+<!-- Navbar -->
+<div class="pos-f-t">
+  <div class="collapse" id="navbarToggleExternalContent">
+    <div class="bg-dark p-4">
+      <h5 class="text-white h4">Collapsed content</h5>
+      <span class="text-muted">Toggleable via the navbar brand.</span>
+    </div>
+  </div>
+  <nav class="navbar navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </nav>
+</div>
+<div *ngIf="!user" class="card text-center">
+    <h6 class="card-header">
+QTicketing System    </h6>
+    <div class="card-block">
+      <h4 class="card-title">Sign in with</h4>
+      <p class="card-text"></p>
+    </div>
+    <div class="card-block">
+      <button class="btn btn-social-icon btn-google mx-1" (click)="signInWithGoogle()"><span class="fa fa-google"></span></button>
+    </div>
+  </div>
+<div *ngIf="user" class="card text-center">
+<div class="row">
+<div class="col-lg-4">
+<div class="card card-profile">
+<div style="background-image: url(https://demo.bootstrapious.com/admin-premium/1-4-5/img/photos/paul-morris-116514-unsplash.jpg);" class="card-header"></div>
+<div class="card-body text-center"><img class="img-rounded" alt="Cinque Terre" src="{{ user.photoUrl }}">
+  <h3 class="mb-3">{{user.name}}</h3>
+  <p class="mb-4">{{user.email}}</p>
+  <button class="btn btn-danger " (click)="signOut()">Sign out</button>
+</div>
+</div>
+
+
+<!-- Message -->
+<div class="input-group">
+  <input type="text" placeholder="Message" class="form-control">
+  <div class="input-group-append">
+    <button type="button" class="btn btn-outline-secondary"><i class="fa fa-send"></i></button>
+  </div>
+</div>
+
+</div>
+<div class="col-lg-8">
+<div class="card">
+<div class="card-header">
+    <button type="button" class="btn btn-secondary float-sm-left"  (click)="toggleIncidentForm()" >CREATE INCIDENT</button>
+</div>
+<div class="card-header" *ngIf = "hideIncidentForm">
+<app-incident></app-incident>
+</div>
+<div class="list-group card-list-group" >
+  <app-comment *ngFor = "let incident of incidents"  [incident]="incident" (pushComment)="addComment($event)"></app-comment>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

@@ -1,0 +1,182 @@
+<div class="card bg-info text-white">
+    <div class="card-body">
+        <button class="btn btn-secondary float-sm-left" style="min-width:200px"
+         (click)="incidentDetail=!incidentDetail">{{incident.submittedBy}}</button>
+    </div>
+    <div class="card-body" *ngIf="incidentDetail">
+        <div class="card">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item" style="background-color:DodgerBlue;">
+                  <span class="badge badge-dark" style="min-width:200px">Submitted By:</span>
+                  <span class="badge badge-dark" style="min-width:200px">
+                    {{incident.submittedBy}}
+                  </span>
+              </li>
+              <li class="list-group-item" style="background-color:DodgerBlue;">
+                <span class="badge badge-dark" style="min-width:200px">Submitted From:</span>
+                <span class="badge badge-dark" style="min-width:200px">
+                    {{incident.submittedFrom}}
+                </span>
+              </li>
+              <li class="list-group-item" style="background-color:DodgerBlue;">
+                  <span class="badge badge-dark" style="min-width:200px">Current Status:</span>
+                  <span class="badge badge-dark" style="min-width:200px">
+                      {{incident.currentStatus}}
+                  </span>
+              </li>
+              <li class="list-group-item" style="background-color:DodgerBlue;">
+                  <span class="badge badge-dark" style="min-width:200px">Priority:</span>
+                  <span class="badge badge-dark" style="min-width:200px">
+                      {{incident.priority}}
+                  </span>
+              </li>
+              <li class="list-group-item" style="background-color:DodgerBlue;">
+                  <span class="badge badge-dark" style="min-width:200px">Assigned To:</span>
+                  <span class="badge badge-dark" style="min-width:200px">
+                      {{incident.assignedTo}}
+                  </span>
+              </li>
+              <li class="list-group-item" style="background-color:DodgerBlue;">
+                  <span class="badge badge-dark" style="min-width:200px">Time:</span>
+                  <span class="badge badge-dark" style="min-width:200px">
+                      {{incident.time}}
+                  </span>
+              </li>
+              <li class="list-group-item" style="background-color:DodgerBlue;">
+                <div class="card-body">
+                    {{incident.issue}}
+                </div>
+              </li>
+              <li class="list-group-item" style="background-color:DodgerBlue;">
+                  <div class="card-body">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                          <li class="nav-item">
+                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true" (click)="showComment = !showComment">Comments:</a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false" (click)="showCommentForm = !showCommentForm">Post a Comment</a>
+                          </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                          <div *ngIf = "showComment" class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                              <ul class="list-group list-group-flush">
+                                  <li *ngFor ="let comment of incident.comments" class="list-group-item" style="background-color:DodgerBlue;">
+                                      <div class="card-body">
+                                          {{comment.comment}}
+                                      </div>
+                                  </li>
+                              </ul>
+                          </div>
+                          <div *ngIf = "showCommentForm" class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                  <div class="alert alert-success" role="alert" *ngIf="showSucessMessage">
+                                    Created Successfully!
+                                  </div>
+                                  <div class="alert alert-danger" *ngIf="serverErrorMessages">
+                                    Failed to Create!
+                                  </div>
+                                    <form class="was-validated"  #createForm="ngForm" (ngSubmit)="createForm.valid && onSubmitComment(createForm)">
+                                      <div class="form-group" style="position:relative">
+                                        <input type="hidden" #_id="ngModel" [(ngModel)]="incident._id" name="_id" [(ngModel)]="commentService.commentSelect.id" >  
+                                      </div>
+                                      <div class="form-group" style="position:relative">
+                                        <textarea  class="form-control" style="position:relative; width:100%" id="exampleFormControlTextarea1" rows="1" type="text" #email="ngModel" 
+                                          [(ngModel)]="commentService.commentSelect.email" 
+                                          name="email" placeholder="Enter Your Email.."></textarea>  
+                                      </div>
+                                      <div class="form-group" style="position:relative">
+                                        <label for="validationTextarea">Comment Down...</label>
+                                        <textarea  class="form-control" style="position:relative; width:100%" id="exampleFormControlTextarea1" rows="2" type="text" #comment="ngModel" 
+                                          [(ngModel)]="commentService.commentSelect.comment" 
+                                          name="comment" placeholder="Place your comments here .."></textarea>
+                                      </div>
+                                      <button type="submit" class="btn btn-primary float-sm-left">POST</button>      
+                                    </form>
+                          </div> 
+                        </div>
+                  </div>
+                </li>
+              <li class="list-group-item" style="background-color:DodgerBlue;">
+                  <button type="button" class="btn btn-secondary" (click) = "showEditIncidentForm = !showEditIncidentForm">Edit Incident</button>
+                  <button type="button" class="btn btn-secondary" ng-click = deleteIncident({incident._id})>Remove Incident</button>
+              </li>
+              <li class="list-group-item" style="background-color:DodgerBlue;">
+                <div class="card-body" *ngIf="showEditIncidentForm">
+                  <div class="alert alert-success" role="alert" *ngIf="showSucessMessage">
+                    Created Successfully!
+                </div>
+                <div class="alert alert-danger" *ngIf="serverErrorMessages">
+                  Failed to Create!
+                </div>
+                <form class="was-validated" #editIncident="ngForm" (ngSubmit)="editIncident.valid && onSubmitEditIncident(editIncident)">
+                    
+                    <div class="form-group" style="position:relative">
+                      <input type="hidden" #_id="ngModel" [(ngModel)]="incident._id" name="_id" [(ngModel)]="commentService.commentSelect.id" >  
+                    </div>
+
+                    <div class="form-group">
+                        <label for="validationTextarea">Submitted By</label>
+                        <textarea  class="form-control" id="exampleFormControlTextarea1" rows="1" type="text" #submittedBy="ngModel" 
+                          [(ngModel)]="incidentService.editIncidentSelect.submittedBy" 
+                          name="submittedBy"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label for="validationTextarea">Submitted From</label>
+                      <textarea  class="form-control" id="exampleFormControlTextarea1" rows="1" type="text" #submittedFrom="ngModel" 
+                        [(ngModel)]="incidentService.editIncidentSelect.submittedFrom" 
+                        name="submittedFrom"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="validationTextarea">Submitted To</label>
+                      <textarea  class="form-control" id="exampleFormControlTextarea1" rows="1" type="text" #submittedTo="ngModel" 
+                        [(ngModel)]="incidentService.editIncidentSelect.submittedTo" 
+                        name="submittedTo"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="validationTextarea">Select Department  </label>  
+                  </div>
+                  <div class="form-group">
+                      <select id="disabledSelect" class="form-control"#currentStatus="ngModel" 
+                      [(ngModel)]="incidentService.incidentSelect.currentStatus" 
+                      name="submittedCurrentStatus">
+                          <option>Processed</option>
+                          <option>Recieved anf Being Analysed</option>
+                          <option>Can not be Processed</option>
+                          <option>Other</option>
+                      </select>
+                  </div>
+              
+              
+                  <div class="form-group">
+                      <label for="validationTextarea">Assign To </label>  
+                  </div>
+                  <div class="form-group">
+                      <select id="disabledSelect" class="form-control"#assignedTo="ngModel" 
+                      [(ngModel)]="incidentService.incidentSelect.assignedTo" 
+                      name="assignedTo">
+                          <option>User-1</option>
+                          <option>User-2</option>
+                          <option>User-3</option>
+                          <option>User-4</option>
+                          <option>Other</option>
+                      </select>
+                  </div>
+
+
+                    <div class="form-group">
+                        <label for="validationTextarea">User Issue.</label>
+                        <textarea  class="form-control" id="exampleFormControlTextarea1" rows="3" type="text" #issue="ngModel" 
+                            [(ngModel)]="incidentService.editIncidentSelect.issue" 
+                            name="issue" placeholder="issue"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary float-sm-left">Apply Changes</button>      
+                </form>                
+                </div>
+              </li>
+            </ul>
+        </div>
+    </div>
+</div>
